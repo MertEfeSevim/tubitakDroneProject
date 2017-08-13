@@ -3,10 +3,15 @@ def coordinator():
 
     liveCam = cv2.VideoCapture(0)
 
+    if not liveCam.isOpened():
+        raise IOError("Cannot access camera.")
+
     while True:
 
         _,frame = liveCam.read()
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        frameResized = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_LINEAR)
+
+        gray = cv2.cvtColor(frameResized, cv2.COLOR_BGR2GRAY)
         detector = cv2.SimpleBlobDetector_create()
         cannyEdge = cv2.Canny(gray, 50, 240)
         dilation = cv2.dilate(cannyEdge, kernel, iterations=1)
@@ -20,6 +25,11 @@ def coordinator():
         for keyPoint in squares:
             x = keyPoint.pt[0]  # i is the index of the blob you want to get the position
             y = keyPoint.pt[1]
+            #print(keyPoint.size)
+
+            if len(squares) == 16 :#and keyPoint.size
+                print("geldi")
+
 
             #col = str(frame[x,y])
             #print(col)
