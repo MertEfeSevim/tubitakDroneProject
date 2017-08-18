@@ -14,7 +14,8 @@ def coordinator():
     buff = np.fromstring(stream.getvalue(), dtype = np.uint8)
 
     # Now creates an OpenCV image
-    liveCam = cv2.imdecode(buff, 1)
+    buff = cv2.imdecode(buff, 1)
+    liveCam = buff[:, :, ::-1]
 
     while True:
 
@@ -57,6 +58,7 @@ if __name__ == '__main__':
     import cv2
     import numpy as np
     import picamera
+    import io
 
     coordinator()
 
