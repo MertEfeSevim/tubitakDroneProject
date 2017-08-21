@@ -9,9 +9,12 @@ def coordinator():
     while True:
 
         _,frame = liveCam.read()
-        frameResized = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_LINEAR)
 
-        gray = cv2.cvtColor(frameResized, cv2.COLOR_BGR2GRAY)
+        frame2RGB =cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+
+        #frameResized = cv2.resize(frame, None, fx=0.9, fy=0.9, interpolation=cv2.INTER_AREA)
+
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         detector = cv2.SimpleBlobDetector_create()
         cannyEdge = cv2.Canny(gray, 50, 240)
         dilation = cv2.dilate(cannyEdge, kernel, iterations=1)
@@ -27,12 +30,13 @@ def coordinator():
             y = keyPoint.pt[1]
             #print(keyPoint.size)
 
-            if len(squares) == 16 :#and keyPoint.size
-                print("geldi")
+            #if len(squares) == 16 :#and keyPoint.size
+             #   print("geldi")
 
 
-            #col = str(frame[x,y])
-            #print(col)
+            color = (frame2RGB[y,x])
+            #hex = (color[0] << 16) + (color[1] << 8) + (color[2])
+            print(color)
 
         cv2.imshow("Squares", im_with_keypoints)
         #cv2.imshow("frame",frame)
