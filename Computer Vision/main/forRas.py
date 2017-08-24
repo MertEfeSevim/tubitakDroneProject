@@ -7,7 +7,7 @@ def coordinator():
     # Get the picture (low resolution, so it should be quite fast)
     # Here you can also specify other parameters (e.g.:rotate the image)
     with picamera.PiCamera() as camera:
-        camera.resolution = (320, 240)
+        camera.resolution = (640, 480) #Bakmak lazım en yüksek değere
         camera.capture(stream, format='jpeg')
 
     # Convert the picture into a numpy array
@@ -38,15 +38,17 @@ def coordinator():
             y = keyPoint.pt[1]
             #print(keyPoint.size)
 
-            #if len(squares) == 16 :#and keyPoint.size
-             #   print("geldi")
-
-
-            col = str(frame[x,y])
-            print(col)
+            if len(squares) == 16:  # and keyPoint.size
+                #    print("geldi")
+                color = (frame[x, y])
+                bgrValues = np.uint8([[color]])
+                bgr2rgb = cv2.cvtColor(bgrValues, cv2.COLOR_BGR2RGB)
+                print("rgb değeri:", bgr2rgb)
+            else:
+                continue
 
         cv2.imshow("Squares", im_with_keypoints)
-        #cv2.imshow("frame",frame)
+        cv2.imshow("frame", frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
