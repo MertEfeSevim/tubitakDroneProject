@@ -5,32 +5,38 @@ kernel = np.ones((5,5),np.uint8)
 
 liveCam = cv2.imread("deneme2.png")
 
-rgbLive = cv2.cvtColor(liveCam,cv2.COLOR_BGR2RGB)
-gray = cv2.cvtColor(liveCam,cv2.COLOR_BGR2GRAY)
+frame2RGB =cv2.cvtColor(liveCam,cv2.COLOR_BGR2RGB)
 
+frameResized = cv2.resize(liveCam, None, fx=0.2, fy=0.2, interpolation=cv2.INTER_LINEAR)
+
+gray = cv2.cvtColor(frameResized, cv2.COLOR_BGR2GRAY)
 detector = cv2.SimpleBlobDetector_create()
-cannyEdge = cv2.Canny(gray,50,240)
-dilation = cv2.dilate(cannyEdge,kernel,iterations = 1)
+cannyEdge = cv2.Canny(gray, 50, 240)
+dilation = cv2.dilate(cannyEdge, kernel, iterations=1)
+# Detect blobs.
 squares = detector.detect(dilation)
 # Draw detected blobs as red circles.
+# cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures the size of the circle corresponds to the size of blob
 im_with_keypoints = cv2.drawKeypoints(gray, squares, np.array([]), (0, 0, 0),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
 
 for keyPoint in squares:
     x = keyPoint.pt[0]  # i is the index of the blob you want to get the position
     y = keyPoint.pt[1]
+    #print(keyPoint.size)
 
-    print(keyPoint.size)
+    #if len(squares) == 16 :#and keyPoint.size
+     #   print("geldi")
 
-    #color = rgbLive[x,y]
-    #hex = (color[0] << 16) + (color[1] << 8) + (color[2])
-    #print(str(color))
-    #print(im_with_keypoints[x, y])
-    #print("(",x,",",y,")")
-#print(len(squares),"tane kare var.")
 
-#cv2.imshow("Squares", im_with_keypoints)
-cv2.imshow("Original",rgbLive)
+    color = (frame2RGB[y,x])
+    hex = (color[0] << 16) + (color[1] << 8) + (color[2])
+
+    print("color",color)
+    print("hex",hex)
+
+cv2.imshow("Squares", im_with_keypoints)
+#cv2.imshow("frame",frame)
 
 
 cv2.waitKey(0)

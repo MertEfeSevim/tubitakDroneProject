@@ -24,7 +24,8 @@ while True:
         x = keyPoint.pt[0]  # i is the index of the blob you want to get the position
         y = keyPoint.pt[1]
 
-        print("(",x,",",y,")")
+        #print("(",x,",",y,")")
+        print(str(frame[x,y]))
     #print(len(squares),"tane kare var.")
 
     cv2.imshow("Squares", im_with_keypoints)

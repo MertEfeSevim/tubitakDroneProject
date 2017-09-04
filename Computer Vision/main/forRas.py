@@ -1,28 +1,26 @@
 def coordinator():
     kernel = np.ones((5,5),np.uint8)
 
-    # Create a memory stream so photos doesn't need to be saved in a file
     stream = io.BytesIO()
 
     # Get the picture (low resolution, so it should be quite fast)
     # Here you can also specify other parameters (e.g.:rotate the image)
     with picamera.PiCamera() as camera:
-        camera.resolution = (640, 480) #Bakmak lazım en yüksek değere
+        camera.resolution = (320, 240)
         camera.capture(stream, format='jpeg')
 
     # Convert the picture into a numpy array
-    buff = np.fromstring(stream.getvalue(), dtype = np.uint8)
+    buff = numpy.fromstring(stream.getvalue(), dtype=numpy.uint8)
 
     # Now creates an OpenCV image
-    buff = cv2.imdecode(buff, 1)
-    liveCam = buff[:, :, ::-1]
+    image = cv2.imdecode(buff, 1)
 
     while True:
 
         #_,frame = liveCam.read()
         #frameResized = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_LINEAR)
 
-        gray = cv2.cvtColor(liveCam, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         detector = cv2.SimpleBlobDetector_create()
         cannyEdge = cv2.Canny(gray, 50, 240)
         dilation = cv2.dilate(cannyEdge, kernel, iterations=1)
@@ -40,7 +38,7 @@ def coordinator():
 
             if len(squares) == 16:  # and keyPoint.size
                 #    print("geldi")
-                color = (frame[x, y])
+                color = (image[x, y])
                 bgrValues = np.uint8([[color]])
                 bgr2rgb = cv2.cvtColor(bgrValues, cv2.COLOR_BGR2RGB)
                 print("rgb değeri:", bgr2rgb)
@@ -48,7 +46,8 @@ def coordinator():
                 continue
 
         cv2.imshow("Squares", im_with_keypoints)
-        cv2.imshow("frame", frame)
+        #cv2.imshow("frame", liveCam)
+        #cv2.imshow("deneme",image)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -59,7 +58,9 @@ def coordinator():
 if __name__ == '__main__':
     import cv2
     import numpy as np
+    import time
     import picamera
+    import picamera.array
     import io
 
     coordinator()

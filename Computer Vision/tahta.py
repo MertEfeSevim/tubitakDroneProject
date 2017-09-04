@@ -10,16 +10,19 @@ def coordinator():
 
         _,frame = liveCam.read()
 
-        frame2RGB =cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
-
         #frameResized = cv2.resize(frame, None, fx=0.9, fy=0.9, interpolation=cv2.INTER_AREA)
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
         detector = cv2.SimpleBlobDetector_create()
+
         cannyEdge = cv2.Canny(gray, 50, 240)
+
         dilation = cv2.dilate(cannyEdge, kernel, iterations=1)
+
         # Detect blobs.
         squares = detector.detect(dilation)
+
         # Draw detected blobs as red circles.
         # cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures the size of the circle corresponds to the size of blob
         im_with_keypoints = cv2.drawKeypoints(gray, squares, np.array([]), (0, 0, 0),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
@@ -30,16 +33,22 @@ def coordinator():
             y = keyPoint.pt[1]
             #print(keyPoint.size)
 
-            #if len(squares) == 16 :#and keyPoint.size
-             #   print("geldi")
+            if len(squares) == 16 :#and keyPoint.size
+            #    print("geldi")
 
 
-            color = (frame2RGB[y,x])
-            #hex = (color[0] << 16) + (color[1] << 8) + (color[2])
-            print(color)
+                color = (frame[x,y])
+                #b, g, r = cv2.split(color)
+                #b, g, r = color[:, :, 0], color[:, :, 1], color[:, :, 2]  # For RGB image
+
+                bgrValues = np.uint8([[color]])
+                bgr2rgb = cv2.cvtColor(bgrValues, cv2.COLOR_BGR2RGB)
+                print("rgb :",bgr2rgb)
+            else:
+                continue
 
         cv2.imshow("Squares", im_with_keypoints)
-        #cv2.imshow("frame",frame)
+        cv2.imshow("frame",frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -47,11 +56,15 @@ def coordinator():
     liveCam.release()
     cv2.destroyAllWindows()
 
+
 if __name__ == '__main__':
     import cv2
     import numpy as np
 
     coordinator()
+
+
+
 
 #print(frame[x, y])
 #hex = (color[0] << 16) + (color[1] << 8) + (color[2])
